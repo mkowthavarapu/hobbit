@@ -63,7 +63,7 @@ pipeline {
             steps {
                 script {
                     // Build backend Docker image
-                    sh 'docker build -t fastapi-backend backend/'
+                    sh 'docker build -t fastapi-backend api/'
 
                     // Build frontend Docker image
                     sh 'docker build -t react-frontend frontend/'
