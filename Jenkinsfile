@@ -1,6 +1,8 @@
 pipeline {
     agent any
     
+    tools {nodejs "nodejs"}
+
     environment {
         // Define Python and Node versions if needed
         PYTHON_VERSION = '3.10'
