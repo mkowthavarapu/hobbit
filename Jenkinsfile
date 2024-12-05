@@ -59,8 +59,8 @@ pipeline {
                 script {
                     echo 'Building Docker images for backend and frontend...'
                     sh '''
-                        docker build -t fastapi-backend:${env.BRANCH_NAME} api/
-                        docker build -t react-frontend:${env.BRANCH_NAME} frontend/
+                        docker build -t fastapi-backend:${BRANCH_NAME} api/
+                        docker build -t react-frontend:${BRANCH_NAME} frontend/
                     '''
                 }
             }
@@ -97,13 +97,13 @@ pipeline {
 
                     // Stop and remove existing containers before running new ones
                     sh '''
-                        docker stop ${env.BRANCH_NAME}-fastapi || true
-                        docker rm ${env.BRANCH_NAME}-fastapi || true
-                        docker stop ${env.BRANCH_NAME}-frontend || true
-                        docker rm ${env.BRANCH_NAME}-frontend || true
+                        docker stop ${BRANCH_NAME}-fastapi || true
+                        docker rm ${BRANCH_NAME}-fastapi || true
+                        docker stop ${BRANCH_NAME}-frontend || true
+                        docker rm ${BRANCH_NAME}-frontend || true
 
-                        docker run -d --name ${env.BRANCH_NAME}-fastapi -p $port:8000 fastapi-backend:${env.BRANCH_NAME}
-                        docker run -d --name ${env.BRANCH_NAME}-frontend -p $((port+1000)):3000 react-frontend:${env.BRANCH_NAME}
+                        docker run -d --name ${BRANCH_NAME}-fastapi -p $port:8000 fastapi-backend:${BRANCH_NAME}
+                        docker run -d --name ${BRANCH_NAME}-frontend -p $((port+1000)):3000 react-frontend:${BRANCH_NAME}
                     '''
                 }
             }
