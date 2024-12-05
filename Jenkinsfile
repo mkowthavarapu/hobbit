@@ -12,7 +12,7 @@ pipeline {
         // Stage 1: Clone the repository
         stage('Checkout') {
             steps {
-                git 'https://github.com/yourusername/hobbit.git'
+                git 'https://github.com/mkowthavarapu/hobbit.git'
             }
         }
         
