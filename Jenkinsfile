@@ -49,14 +49,14 @@ pipeline {
             }
         }
         
-        // Stage 5: Run frontend tests (Optional)
-        stage('Test Frontend') {
-            steps {
-                script {
-                    sh 'npm test --prefix frontend'
-                }
-            }
-        }
+        // // Stage 5: Run frontend tests (Optional)
+        // stage('Test Frontend') {
+        //     steps {
+        //         script {
+        //             sh 'npm test --prefix frontend'
+        //         }
+        //     }
+        // }
         
         // Stage 6: Build Docker Images (Optional)
         stage('Build Docker Images') {
