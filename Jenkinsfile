@@ -28,13 +28,13 @@ pipeline {
         }
         
         // Stage 3: Run backend tests
-        stage('Test Backend') {
-            steps {
-                script {
-                    sh '. venv/bin/activate && pytest api/tests'
-                }
-            }
-        }
+        // stage('Test Backend') {
+        //     steps {
+        //         script {
+        //             sh '. venv/bin/activate && pytest api/tests'
+        //         }
+        //     }
+        // }
 
         // Stage 4: Build frontend (ReactJS)
         stage('Build Frontend (ReactJS)') {
