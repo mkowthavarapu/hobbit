@@ -1,7 +1,7 @@
 pipeline {
     agent any
     
-    tools {nodejs "nodejs"}
+    tools {nodejs "node"}
 
     environment {
         // Define Python and Node versions if needed
