@@ -6,15 +6,20 @@ pipeline {
     }
 
     environment {
-        PYTHON_VERSION = '3.10' // Optional: Python version
-        NODE_VERSION = '16'    // Optional: Node.js version
+        PYTHON_VERSION = '3.10' // Python version (optional)
+        NODE_VERSION = '16'    // Node.js version (optional)
 
-        // Define ports for each branch
-        DEV_PORT = 8001
-        QA_PORT = 8002
-        UAT_PORT = 8003
-        PREPROD_PORT = 8004
-        PROD_PORT = 8005
+        // Define base ports for each branch
+        DEV_BACKEND_PORT = 8001
+        DEV_FRONTEND_PORT = 3001
+        QA_BACKEND_PORT = 8002
+        QA_FRONTEND_PORT = 3002
+        UAT_BACKEND_PORT = 8003
+        UAT_FRONTEND_PORT = 3003
+        PREPROD_BACKEND_PORT = 8004
+        PREPROD_FRONTEND_PORT = 3004
+        PROD_BACKEND_PORT = 8005
+        PROD_FRONTEND_PORT = 3005
     }
 
     stages {
@@ -71,40 +76,46 @@ pipeline {
             steps {
                 script {
                     echo "Determining deployment environment for branch: ${env.BRANCH_NAME}..."
-                    
-                    def port
+
+                    def backendPort
+                    def frontendPort
                     switch (env.BRANCH_NAME) {
                         case 'dev':
-                            port = DEV_PORT
+                            backendPort = DEV_BACKEND_PORT
+                            frontendPort = DEV_FRONTEND_PORT
                             break
                         case 'qa':
-                            port = QA_PORT
+                            backendPort = QA_BACKEND_PORT
+                            frontendPort = QA_FRONTEND_PORT
                             break
                         case 'uat':
-                            port = UAT_PORT
+                            backendPort = UAT_BACKEND_PORT
+                            frontendPort = UAT_FRONTEND_PORT
                             break
                         case 'preprod':
-                            port = PREPROD_PORT
+                            backendPort = PREPROD_BACKEND_PORT
+                            frontendPort = PREPROD_FRONTEND_PORT
                             break
                         case 'master':
-                            port = PROD_PORT
+                            backendPort = PROD_BACKEND_PORT
+                            frontendPort = PROD_FRONTEND_PORT
                             break
                         default:
                             error "Unknown branch: ${env.BRANCH_NAME}. No deployment configured."
                     }
 
-                    echo "Deploying to port $port for branch ${env.BRANCH_NAME}..."
+                    echo "Deploying backend to port $backendPort and frontend to port $frontendPort for branch ${env.BRANCH_NAME}..."
 
                     // Stop and remove existing containers before running new ones
-                    sh '''
+                    sh """
                         docker stop ${BRANCH_NAME}-fastapi || true
                         docker rm ${BRANCH_NAME}-fastapi || true
                         docker stop ${BRANCH_NAME}-frontend || true
                         docker rm ${BRANCH_NAME}-frontend || true
 
-                        docker run -d --name ${BRANCH_NAME}-fastapi -p $port:8000 fastapi-backend:${BRANCH_NAME}
-                        docker run -d --name ${BRANCH_NAME}-frontend -p $((port+1000)):3000 react-frontend:${BRANCH_NAME}
-                    '''
+                        docker run -d --name ${BRANCH_NAME}-fastapi -p ${backendPort}:8000 fastapi-backend:${BRANCH_NAME}
+                        docker run -d --name ${BRANCH_NAME}-frontend -p ${frontendPort}:3000 react-frontend:${BRANCH_NAME}
+                    """
                 }
             }
         }
