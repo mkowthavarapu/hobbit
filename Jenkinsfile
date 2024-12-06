@@ -8,6 +8,7 @@ pipeline {
     environment {
         PYTHON_VERSION = '3.10' // Python version (optional)
         NODE_VERSION = '16'    // Node.js version (optional)
+        PROJECT = 'hobbit'
 
         // Define base ports for each branch
         DEV_BACKEND_PORT = 8001
@@ -64,8 +65,8 @@ pipeline {
                 script {
                     echo 'Building Docker images for backend and frontend...'
                     sh '''
-                        docker build -t fastapi-backend:${BRANCH_NAME} api/
-                        docker build -t react-frontend:${BRANCH_NAME} frontend/
+                        docker build -t ${PROJECT}-api:${BRANCH_NAME} api/
+                        docker build -t ${PROJECT}-frontend:${BRANCH_NAME} frontend/
                     '''
                 }
             }
@@ -108,13 +109,13 @@ pipeline {
 
                     // Stop and remove existing containers before running new ones
                     sh """
-                        docker stop ${BRANCH_NAME}-fastapi || true
-                        docker rm ${BRANCH_NAME}-fastapi || true
-                        docker stop ${BRANCH_NAME}-frontend || true
-                        docker rm ${BRANCH_NAME}-frontend || true
+                        docker stop ${BRANCH_NAME}-${PROJECT}-api || true
+                        docker rm ${BRANCH_NAME}-${PROJECT}-api || true
+                        docker stop ${BRANCH_NAME}-${PROJECT}-frontend || true
+                        docker rm ${BRANCH_NAME}-${PROJECT}-frontend || true
 
-                        docker run -d --name ${BRANCH_NAME}-fastapi -p ${backendPort}:8000 fastapi-backend:${BRANCH_NAME}
-                        docker run -d --name ${BRANCH_NAME}-frontend -p ${frontendPort}:3000 react-frontend:${BRANCH_NAME}
+                        docker run -d --name ${BRANCH_NAME}-${PROJECT}-api -p ${backendPort}:8000 ${PROJECT}-api${BRANCH_NAME}
+                        docker run -d --name ${BRANCH_NAME}-${PROJECT}-frontend -p ${frontendPort}:3000 ${PROJECT}-frontend:${BRANCH_NAME}
                     """
                 }
             }
