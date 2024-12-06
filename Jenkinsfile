@@ -64,10 +64,10 @@ pipeline {
             steps {
                 script {
                     echo 'Building Docker images for backend and frontend...'
-                    sh '''
+                    sh """
                         docker build -t ${PROJECT}-api:${BRANCH_NAME} api/
                         docker build -t ${PROJECT}-frontend:${BRANCH_NAME} frontend/
-                    '''
+                    """
                 }
             }
         }
@@ -114,7 +114,7 @@ pipeline {
                         docker stop ${BRANCH_NAME}-${PROJECT}-frontend || true
                         docker rm ${BRANCH_NAME}-${PROJECT}-frontend || true
 
-                        docker run -d --name ${BRANCH_NAME}-${PROJECT}-api -p ${backendPort}:8000 ${PROJECT}-api${BRANCH_NAME}
+                        docker run -d --name ${BRANCH_NAME}-${PROJECT}-api -p ${backendPort}:8000 ${PROJECT}-api:${BRANCH_NAME}
                         docker run -d --name ${BRANCH_NAME}-${PROJECT}-frontend -p ${frontendPort}:3000 ${PROJECT}-frontend:${BRANCH_NAME}
                     """
                 }
